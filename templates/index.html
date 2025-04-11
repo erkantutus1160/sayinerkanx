@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Web Güvenlik Taraması</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        h1 { color: #333; }
+        form { margin-bottom: 20px; }
+        .result { margin-top: 20px; }
+        .safe { color: green; }
+        .vuln { color: red; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Web Sitesi Güvenlik Taraması</h1>
+    <form method="POST">
+        <label>URL girin: </label>
+        <input type="text" name="url" required style="width: 300px;">
+        <button type="submit">Taramayı Başlat</button>
+    </form>
+
+    {% if results %}
+        <div class="result">
+            <h2>🧾 Tarama Sonuçları</h2>
+            
+            <h3>HTTP Güvenlik Başlıkları</h3>
+            <ul>
+            {% for header, status in results.headers.items() %}
+                <li>{{ header }}: <span class="{{ 'safe' if 'Var' in status else 'vuln' }}">{{ status }}</span></li>
+            {% endfor %}
+            </ul>
+
+            <h3>XSS Testi</h3>
+            <p class="{{ 'safe' if 'Bulunamadı' in results.xss else 'vuln' }}">{{ results.xss }}</p>
+
+            <h3>SQLi Testi</h3>
+            <p class="{{ 'safe' if 'Bulunamadı' in results.sqli else 'vuln' }}">{{ results.sqli }}</p>
+        </div>
+    {% endif %}
+</body>
+</html>
